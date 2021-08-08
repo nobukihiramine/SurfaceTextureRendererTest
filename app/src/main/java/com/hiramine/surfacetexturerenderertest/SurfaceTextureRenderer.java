@@ -35,6 +35,7 @@ class SurfaceTextureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
 	private       int            m_iMVPMatrixUniformLocation;
 	private       int            m_iSTMatrixUniformLocation;
 	private       int            m_iTextureID;
+	private       int            m_iVboID;
 	private final FloatBuffer    m_fbVertex;
 	private final float[]        m_f16MVPMatrix = new float[16];
 	private final float[]        m_f16STMatrix  = new float[16];
@@ -125,6 +126,14 @@ class SurfaceTextureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
 		GLES20.glTexParameterf( GLES11Ext.GL_TEXTURE_EXTERNAL_OES, GLES20.GL_TEXTURE_WRAP_T, GLES20.GL_CLAMP_TO_EDGE );
 		GLES20.glBindTexture( GLES11Ext.GL_TEXTURE_EXTERNAL_OES, 0 );
 
+		// VBOの作成とデータのグラフィックスメモリへのコピー
+		int[] aiVboID = new int[1];
+		GLES20.glGenBuffers( 1, aiVboID, 0 );
+		m_iVboID = aiVboID[0];
+		GLES20.glBindBuffer( GLES20.GL_ARRAY_BUFFER, m_iVboID );
+		GLES20.glBufferData( GLES20.GL_ARRAY_BUFFER, m_fbVertex.capacity() * MyUtils.SIZEOF_FLOAT, m_fbVertex, GLES20.GL_STATIC_DRAW );
+		GLES20.glBindBuffer( GLES20.GL_ARRAY_BUFFER, 0 );
+
 		// SurfaceTextureとSurfaceの作成
 		m_surfacetexture = new SurfaceTexture( m_iTextureID );
 		m_surfacetexture.setOnFrameAvailableListener( this );
@@ -179,19 +188,25 @@ class SurfaceTextureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
 		GLES20.glActiveTexture( GLES20.GL_TEXTURE0 );
 		GLES20.glBindTexture( GLES11Ext.GL_TEXTURE_EXTERNAL_OES, m_iTextureID );
 
+		// VBOのバインド
+		GLES20.glBindBuffer( GLES20.GL_ARRAY_BUFFER, m_iVboID );
+
 		// シェーダープログラムへ頂点座標値データの転送
-		m_fbVertex.position( 0 );
-		GLES20.glVertexAttribPointer( m_iPositionAttributeLocation, 3, GLES20.GL_FLOAT, false, 5 * MyUtils.SIZEOF_FLOAT, m_fbVertex );
+		GLES20.glVertexAttribPointer( m_iPositionAttributeLocation, 3, GLES20.GL_FLOAT, false, 5 * MyUtils.SIZEOF_FLOAT,
+									  0 );
 		MyUtils.checkGlError( "glVertexAttribPointer Position" );
 		GLES20.glEnableVertexAttribArray( m_iPositionAttributeLocation );
 		MyUtils.checkGlError( "glEnableVertexAttribArray Position" );
 
 		// シェーダープログラムへテクスチャ座標値データの転送
-		m_fbVertex.position( 3 );
-		GLES20.glVertexAttribPointer( m_iTexCoordAttributeLocation, 2, GLES20.GL_FLOAT, false, 5 * MyUtils.SIZEOF_FLOAT, m_fbVertex );
+		GLES20.glVertexAttribPointer( m_iTexCoordAttributeLocation, 2, GLES20.GL_FLOAT, false, 5 * MyUtils.SIZEOF_FLOAT,
+									  3 * MyUtils.SIZEOF_FLOAT );
 		MyUtils.checkGlError( "glVertexAttribPointer TexCoord" );
 		GLES20.glEnableVertexAttribArray( m_iTexCoordAttributeLocation );
 		MyUtils.checkGlError( "glEnableVertexAttribArray TexCoord" );
+
+		// VBOのバインドの解除
+		GLES20.glBindBuffer( GLES20.GL_ARRAY_BUFFER, 0 );
 
 		// シェーダープログラムへ行列データの転送
 		GLES20.glUniformMatrix4fv( m_iMVPMatrixUniformLocation, 1, false, m_f16MVPMatrix, 0 );
