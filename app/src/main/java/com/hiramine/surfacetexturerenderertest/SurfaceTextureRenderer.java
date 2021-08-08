@@ -70,7 +70,7 @@ class SurfaceTextureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
 	public SurfaceTextureRenderer()
 	{
 		Log.d( TAG, "Constructor" );
-		Log.d( TAG, "Thread name = " + Thread.currentThread().getName() );	// Thread name = main
+		Log.d( TAG, "Thread name = " + Thread.currentThread().getName() );    // Thread name = main
 
 		float[] m_afVertex = {
 				// X, Y, Z, U, V
@@ -89,7 +89,7 @@ class SurfaceTextureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
 	public void onSurfaceCreated( GL10 gl10, EGLConfig eglConfig )
 	{
 		Log.d( TAG, "onSurfaceCreated" );
-		Log.d( TAG, "Thread name = " + Thread.currentThread().getName() );	// Thread name = GLThread XXXX
+		Log.d( TAG, "Thread name = " + Thread.currentThread().getName() );    // Thread name = GLThread XXXX
 
 		m_iProgram = MyUtils.createProgram( m_strVertexShaderCode, m_strFragmentShaderCode );
 		if( 0 == m_iProgram )
@@ -135,7 +135,7 @@ class SurfaceTextureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
 	public void onSurfaceChanged( GL10 gl10, int width, int height )
 	{
 		Log.d( TAG, "onSurfaceChanged" );
-		Log.d( TAG, "Thread name = " + Thread.currentThread().getName() );	// Thread name = GLThread XXXX
+		Log.d( TAG, "Thread name = " + Thread.currentThread().getName() );    // Thread name = GLThread XXXX
 
 		// テクスチャの大きさ
 		m_iTextureWidth = width;
@@ -154,20 +154,13 @@ class SurfaceTextureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
 
 		synchronized( this )
 		{
-			if( false == m_bNewFrameAvailable )
-			{	// 新しいフレームが使用可能になるまでは、何もしない
-				return;
-			}
-			else
+			if( m_bNewFrameAvailable )
 			{
 				m_surfacetexture.updateTexImage();
 				m_surfacetexture.getTransformMatrix( m_f16STMatrix );
 				m_bNewFrameAvailable = false;
 			}
 		}
-
-		Log.d( TAG, "onDrawFrame drawing start" );
-		Log.d( TAG, "Thread name = " + Thread.currentThread().getName() );	// Thread name = main
 
 		// バッファークリア
 		GLES20.glClearColor( 0.0f, 1.0f, 0.0f, 1.0f );
@@ -205,15 +198,13 @@ class SurfaceTextureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
 		GLES20.glDrawArrays( GLES20.GL_TRIANGLE_STRIP, 0, 4 );
 		MyUtils.checkGlError( "glDrawArrays" );
 		GLES20.glFinish();
-
-		Log.d( TAG, "onDrawFrame drawing end" );
 	}
 
 	@Override
 	public void onFrameAvailable( SurfaceTexture surfaceTexture )
 	{
 		Log.d( TAG, "onFrameAvailable" );
-		Log.d( TAG, "Thread name = " + Thread.currentThread().getName() );	// Thread name = main
+		Log.d( TAG, "Thread name = " + Thread.currentThread().getName() );    // Thread name = main
 
 		synchronized( this )
 		{
@@ -241,7 +232,6 @@ class SurfaceTextureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
 		m_paint.setColor( Color.rgb( 0, 255, 0 ) );
 		m_paint.setStyle( Paint.Style.STROKE );
 		m_paint.setStrokeWidth( 30 );
-		// (x1,y1,r,paint) 中心x1座標, 中心y1座標, r半径
 		canvas.drawCircle( 400, 600, 200, m_paint );
 
 		m_surface.unlockCanvasAndPost( canvas );
