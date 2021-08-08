@@ -9,10 +9,13 @@ import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
 import android.opengl.GLSurfaceView;
 import android.opengl.Matrix;
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.Surface;
 
 import java.nio.FloatBuffer;
+import java.util.Random;
 
 import javax.microedition.khronos.egl.EGLConfig;
 import javax.microedition.khronos.opengles.GL10;
@@ -42,6 +45,8 @@ class SurfaceTextureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
 	// ランダムサークル描画用メンバ変数
 	private final Rect           m_rectTexture  = new Rect();
 	private final Paint          m_paint        = new Paint();
+	private final Random         m_random       = new Random();
+	private final Handler        m_handler      = new Handler( Looper.getMainLooper() );
 
 	// シェーダーコード
 	private final String m_strVertexShaderCode =
@@ -215,8 +220,8 @@ class SurfaceTextureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
 	// Surfaceでの描画
 	public void drawInSurface()
 	{
-		Log.d( TAG, "drawRandomCirclesInSurface" );
-		Log.d( TAG, "Thread name = " + Thread.currentThread().getName() );	// Thread name = GLThread XXXX
+		Log.d( TAG, "drawInSurface" );
+		Log.d( TAG, "Thread name = " + Thread.currentThread().getName() );    // Thread name = GLThread XXXX
 
 		Canvas canvas = m_surface.lockCanvas( m_rectTexture );
 
@@ -224,16 +229,30 @@ class SurfaceTextureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
 		canvas.drawColor( Color.rgb( 128, 128, 128 ) );
 
 		// 矩形
-		m_paint.setColor( Color.rgb( 255, 0, 0 ) );
+		m_paint.setColor( Color.rgb( m_random.nextInt( 255 ), m_random.nextInt( 255 ), m_random.nextInt( 255 ) ) );
 		m_paint.setStyle( Paint.Style.FILL );
-		canvas.drawRect( 200, 300, 400, 600, m_paint );
+		int iX          = m_random.nextInt( m_iTextureWidth );
+		int iY          = m_random.nextInt( m_iTextureWidth );
+		int iHalfWidth  = m_random.nextInt( 200 );
+		int iHalfHeight = m_random.nextInt( 200 );
+		canvas.drawRect( iX - iHalfWidth, iY - iHalfHeight, iX + iHalfWidth, iY + iHalfHeight, m_paint );
 
 		// 円
-		m_paint.setColor( Color.rgb( 0, 255, 0 ) );
+		m_paint.setColor( Color.rgb( m_random.nextInt( 255 ), m_random.nextInt( 255 ), m_random.nextInt( 255 ) ) );
 		m_paint.setStyle( Paint.Style.STROKE );
 		m_paint.setStrokeWidth( 30 );
-		canvas.drawCircle( 400, 600, 200, m_paint );
+		int iRadius = m_random.nextInt( 200 );
+		canvas.drawCircle( m_random.nextInt( m_iTextureWidth ), m_random.nextInt( m_iTextureHeight ), iRadius, m_paint );
 
 		m_surface.unlockCanvasAndPost( canvas );
+
+		m_handler.postDelayed( new Runnable()
+		{
+			@Override
+			public void run()
+			{
+				drawInSurface();
+			}
+		}, 100 );
 	}
 }
