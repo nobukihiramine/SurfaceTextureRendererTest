@@ -188,7 +188,7 @@ class SurfaceTextureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
 
 		// シェーダープログラムへテクスチャ座標値データの転送
 		m_fbVertex.position( 3 );
-		GLES20.glVertexAttribPointer( m_iTexCoordAttributeLocation, 3, GLES20.GL_FLOAT, false, 5 * MyUtils.SIZEOF_FLOAT, m_fbVertex );
+		GLES20.glVertexAttribPointer( m_iTexCoordAttributeLocation, 2, GLES20.GL_FLOAT, false, 5 * MyUtils.SIZEOF_FLOAT, m_fbVertex );
 		MyUtils.checkGlError( "glVertexAttribPointer TexCoord" );
 		GLES20.glEnableVertexAttribArray( m_iTexCoordAttributeLocation );
 		MyUtils.checkGlError( "glEnableVertexAttribArray TexCoord" );
