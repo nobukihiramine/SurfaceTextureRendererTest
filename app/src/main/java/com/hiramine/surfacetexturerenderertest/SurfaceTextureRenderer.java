@@ -37,17 +37,26 @@ class SurfaceTextureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
 	private       int            m_iTextureID;
 	private       int            m_iVboID;
 	private final FloatBuffer    m_fbVertex;
-	private final float[]        m_f16MVPMatrix = new float[16];
-	private final float[]        m_f16STMatrix  = new float[16];
+	private final float[]        m_f16MVPMatrix          = new float[16];
+	private final float[]        m_f16STMatrix           = new float[16];
 	// Surface関連
 	private       Surface        m_surface;
 	private       SurfaceTexture m_surfacetexture;
 	private       boolean        m_bNewFrameAvailable;
 	// ランダムサークル描画用メンバ変数
-	private final Rect           m_rectTexture  = new Rect();
-	private final Paint          m_paint        = new Paint();
-	private final Random         m_random       = new Random();
-	private final Handler        m_handler      = new Handler( Looper.getMainLooper() );
+	private final Rect           m_rectTexture           = new Rect();
+	private final Paint          m_paint                 = new Paint();
+	private final Random         m_random                = new Random();
+	private final Handler        m_handlerDrawInSurface  = new Handler( Looper.getMainLooper() );
+	private final Runnable       m_runnableDrawInSurface = new Runnable()
+	{
+		@Override
+		public void run()
+		{
+			drawInSurface();
+			m_handlerDrawInSurface.postDelayed( m_runnableDrawInSurface, 100 );
+		}
+	};
 
 	// シェーダーコード
 	private final String m_strVertexShaderCode =
@@ -155,9 +164,6 @@ class SurfaceTextureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
 		m_iTextureWidth = width;
 		m_iTextureHeight = height;
 		m_surfacetexture.setDefaultBufferSize( m_iTextureWidth, m_iTextureHeight );
-
-		// Surfaceでの描画
-		drawInSurface();
 	}
 
 	@Override
@@ -233,10 +239,15 @@ class SurfaceTextureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
 	}
 
 	// Surfaceでの描画
-	public void drawInSurface()
+	private void drawInSurface()
 	{
 		Log.d( TAG, "drawInSurface" );
 		Log.d( TAG, "Thread name = " + Thread.currentThread().getName() );    // Thread name = GLThread XXXX
+
+		if( null == m_surface )
+		{
+			return;
+		}
 
 		Canvas canvas = m_surface.lockCanvas( m_rectTexture );
 
@@ -260,14 +271,15 @@ class SurfaceTextureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
 		canvas.drawCircle( m_random.nextInt( m_iTextureWidth ), m_random.nextInt( m_iTextureHeight ), iRadius, m_paint );
 
 		m_surface.unlockCanvasAndPost( canvas );
+	}
 
-		m_handler.postDelayed( new Runnable()
-		{
-			@Override
-			public void run()
-			{
-				drawInSurface();
-			}
-		}, 100 );
+	public void startDrawInSurface()
+	{
+		m_handlerDrawInSurface.postDelayed( m_runnableDrawInSurface, 0 );
+	}
+
+	public void stopDrawInSurface()
+	{
+		m_handlerDrawInSurface.removeCallbacks( m_runnableDrawInSurface );
 	}
 }

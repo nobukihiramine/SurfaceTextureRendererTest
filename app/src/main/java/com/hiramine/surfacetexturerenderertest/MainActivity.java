@@ -7,7 +7,8 @@ import android.os.Bundle;
 
 public class MainActivity extends AppCompatActivity
 {
-	private GLSurfaceView m_glsurfaceview;
+	private GLSurfaceView          m_glsurfaceview;
+	private SurfaceTextureRenderer m_surfacetexturerenderer;
 
 	@Override
 	protected void onCreate( Bundle savedInstanceState )
@@ -22,10 +23,10 @@ public class MainActivity extends AppCompatActivity
 		m_glsurfaceview.setEGLContextClientVersion( 2 );
 
 		// Rendererの作成
-		SurfaceTextureRenderer renderer = new SurfaceTextureRenderer();
+		m_surfacetexturerenderer = new SurfaceTextureRenderer();
 
 		// Rendererの作成と、GLSurfaceViewへのセット
-		m_glsurfaceview.setRenderer( renderer );
+		m_glsurfaceview.setRenderer( m_surfacetexturerenderer );
 
 		//  絶え間ないレンダリング
 		m_glsurfaceview.setRenderMode( GLSurfaceView.RENDERMODE_CONTINUOUSLY );
@@ -38,12 +39,16 @@ public class MainActivity extends AppCompatActivity
 		super.onResume();
 
 		m_glsurfaceview.onResume();
+
+		m_surfacetexturerenderer.startDrawInSurface();
 	}
 
 	// 別のアクティビティ（か別のアプリ）に移行したことで、バックグラウンドに追いやられた時
 	@Override
 	protected void onPause()
 	{
+		m_surfacetexturerenderer.stopDrawInSurface();
+
 		m_glsurfaceview.onPause();
 
 		super.onPause();
