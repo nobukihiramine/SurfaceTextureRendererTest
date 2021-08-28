@@ -1,5 +1,5 @@
 # SurfaceTextureRendererTest
-SurfaceTexture に出力した画像を、画面に描画する方法
+SurfaceTexture に出力した画像を、画面に描画する方法 
 https://www.hiramine.com/programming/android/surfacetexturerenderer_usevbo.html
 
 ## Screenshots : スクリーンショット
