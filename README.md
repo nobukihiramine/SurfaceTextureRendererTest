@@ -1,11 +1,11 @@
 # SurfaceTextureRendererTest
-## SurfaceTexture に出力した画像を、画面に描画する方法  
+SurfaceTexture に出力した画像を、画面に描画する方法  
 画像を1度だけ画面に描画  
-https://www.hiramine.com/programming/android/surfacetexturerenderer_drawonce.html
+https://www.hiramine.com/programming/android/surfacetexturerenderer_drawonce.html  
 連続画像を画面に描画  
-https://www.hiramine.com/programming/android/surfacetexturerenderer_drawcontinuously.html
+https://www.hiramine.com/programming/android/surfacetexturerenderer_drawcontinuously.html  
 頂点バッファオブジェクトの利用  
-https://www.hiramine.com/programming/android/surfacetexturerenderer_usevbo.html
+https://www.hiramine.com/programming/android/surfacetexturerenderer_usevbo.html  
 
 ## Screenshots : スクリーンショット
 <img src="screenshots/screenshot_01.png" width="240" alt="Screenshot"/> <img src="screenshots/screenshot_02.png" width="240" alt="Screenshot"/> <img src="screenshots/screenshot_03.png" width="240" alt="Screenshot"/>
