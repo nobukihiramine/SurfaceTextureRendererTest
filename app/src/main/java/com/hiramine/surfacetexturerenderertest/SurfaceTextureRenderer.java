@@ -164,6 +164,9 @@ class SurfaceTextureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
 		m_iTextureWidth = width;
 		m_iTextureHeight = height;
 		m_surfacetexture.setDefaultBufferSize( m_iTextureWidth, m_iTextureHeight );
+
+		// Surfaceでの描画
+		//drawInSurface();
 	}
 
 	@Override
