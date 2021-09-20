@@ -3,7 +3,6 @@ package com.hiramine.surfacetexturerenderertest;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Rect;
 import android.graphics.SurfaceTexture;
 import android.opengl.GLES11Ext;
 import android.opengl.GLES20;
@@ -44,7 +43,6 @@ class SurfaceTextureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
 	private       SurfaceTexture m_surfacetexture;
 	private       boolean        m_bNewFrameAvailable;
 	// ランダムサークル描画用メンバ変数
-	private final Rect           m_rectTexture           = new Rect();
 	private final Paint          m_paint                 = new Paint();
 	private final Random         m_random                = new Random();
 	private final Handler        m_handlerDrawInSurface  = new Handler( Looper.getMainLooper() );
@@ -252,7 +250,7 @@ class SurfaceTextureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
 			return;
 		}
 
-		Canvas canvas = m_surface.lockCanvas( m_rectTexture );
+		Canvas canvas = m_surface.lockCanvas( null );	// nullを渡し、描画領域をサーフェス全体とする。
 
 		// 全体塗りつぶし
 		canvas.drawColor( Color.rgb( 128, 128, 128 ) );
