@@ -21,7 +21,7 @@ Nobuki HIRAMINE : [http://www.hiramine.com](http://www.hiramine.com)
 
 ## License : ライセンス
 ```
-Copyright 2017 Nobuki HIRAMINE
+Copyright 2021 Nobuki HIRAMINE
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
