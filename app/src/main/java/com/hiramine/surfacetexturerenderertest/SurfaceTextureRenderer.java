@@ -158,6 +158,9 @@ class SurfaceTextureRenderer implements GLSurfaceView.Renderer, SurfaceTexture.O
 		Log.d( TAG, "onSurfaceChanged" );
 		Log.d( TAG, "Thread name = " + Thread.currentThread().getName() );    // Thread name = GLThread XXXX
 
+		// ビューポート設定
+		GLES20.glViewport(0, 0, width, height);
+
 		// テクスチャの大きさ
 		m_iTextureWidth = width;
 		m_iTextureHeight = height;
